@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
 """
-Pymail by Kristof Kovacs
-
+Pymail by Kristof Kovacs and Daniel Zheleznov
 REQUIREMENTS:
 	1. Google mail account.
 	2. Turn on less secure app access in Google mail account.
 	3. Python 3.
-
 """
 
+#Imports
 import smtplib
 from tkinter import *
 from tkinter import ttk
@@ -17,6 +16,17 @@ from tkinter.messagebox import showinfo
 
 
 def login():
+	'''
+	Called when login button is pressed.
+
+	1. Stores is email address and password input into a variable and globalises it.
+	2. Deletes all text in entries.
+	3. Checks if the last ten characters of the email address input is equal to '@gmail.com' to confirm that the email is a Google Mail.
+	4. Checks if password input does not equal to nothing.
+	5. If the conditions return true then the window will be destroyed, a pop up window will appear letting the user know their login was successful and the email() function is called.
+	6. Else the User will know the login was unsuccessful.
+	'''
+
 	global email_address_input
 	global password_input
 
@@ -30,12 +40,23 @@ def login():
 		showinfo('Login Successful', 'Successfully logged in as {}'.format(email_address_input))
 		window.destroy()
 		email()
-	
+
 	else:
 		showinfo('Error', 'Login Unsuccessful.')
 
 
 def email():
+	'''
+	Called when Login() is successful.
+
+	1. Creates a new window with basic email entries.
+	2. Configures the window to be placed at the centre of the screen.
+	3. Stores new inputs into variables and are globalised to be used in other functions.
+	4. The window and progress_bar is globalised so they can be used when emails are sent.
+
+	Note: The window like the login window is not resizeable because the app is not meant to be resized.
+	'''
+
 	global window
 	global progress_bar
 
@@ -97,18 +118,50 @@ def email():
 
 
 def send():
+	'''
+	Called when send_button is pressed.
+
+	1. Stores the integer 1 in a variable how many, indicating that the email will be sent once to the recipient.
+	2. Calls send_mail() function.
+	'''
+
 	global how_many
-	how_many = '1'
+	how_many = 1
 	send_mail()
 
 
 def spam():
+	'''
+	Called when spam_button is pressed.
+
+	1. Stores the integer 10 in a variable how many, indicating that the email will be sent ten times to the recipient, just for fun.
+	2. Calls send_mail() function.
+	'''
+
 	global how_many
-	how_many = '10'
+	how_many = 10
+	print(type(how_many))
 	send_mail()
 
 
 def send_mail():
+	'''
+	Called by either the send() function or the spam() function.
+
+	1. All inputs are stored in new variables.
+	2. Constructs the message using most inputs.
+	3. Creates a server object 'smtp.gmail.com' at port 587.
+	4. Communication will be encrypted using Transport Layer Security, obscuring message, email and password over the internet.
+	This prevents someone from eavesdropping. For example, using a packet sniffer with Wireshark.
+	5. If the how_many variable is equal to 1 or 10, the program will try to login with the email and password that was entered in the login window.
+	6. Next, the program will send the email from the sender to the receiver with the message.
+	7. The server object will then quit.
+	8. While the emails are being sent, the progress bar will be updated to the emails that were successfully sent.
+	9. There are exceptions for when the login is unsuccessful and when the email did not reach the recipient.
+
+	NOTE: If the email is being sent once, the progress bar will not look like it is working because it is being automatically reset when the email is sent.
+	'''
+
 	sender = email_address_input
 	password = password_input
 	receiver = receiver_input.get()
@@ -125,7 +178,7 @@ def send_mail():
 	server.starttls()
 
 	try:
-		if how_many == '1':
+		if how_many == 1:
 			server.login(sender, password)
 			progress_bar['value'] += 100
 			server.sendmail((sender), (receiver), (message))
@@ -144,7 +197,7 @@ def send_mail():
 		showinfo('Error', f'Email was not sent to {receiver}')
 
 	try:
-		if how_many == '10':
+		if how_many == 10:
 			progress_bar.stop()
 			server.login(sender, password)
 			for i in range(10):
@@ -167,17 +220,48 @@ def send_mail():
 
 
 def manual():
+	'''
+	Called when Manual menu is pressed.
+
+	Tells the user how to use the program.
+	'''
+
 	showinfo('Manual', 'Requirements:\n1. Google Mail.\n2. Less secure app access:ON, https://myaccount.google.com/lesssecureapps.\n\nHow to use:\n1. Enter a valid gmail address and its password.\n2. Click login.\n3. Enter the receiver address, the subject and the text into the corresponding entries.\n4. Click send.\n5. Finished.')
 
 
 def about():
+	'''
+	Called when About menu is pressed.
+
+	Tells the user who wrote this program.
+	'''
+
 	showinfo('About this program', 'This is an email application written by Kristof Kovacs!\nIn collaboration with Daniel Zheleznov.')
 
+
 def saving():
+	'''
+	Called when save_checkbox is checked.
+
+	1. Checks if the checkbox is checked.
+	2. Changes colour of the checkbox to show the user they have checked the checkbox.
+	'''
+
 	if save.get() == 1:
 		save_checkbox['fg'] = 'green'
+
 	else:
 		save_checkbox['fg'] = 'white'
+
+
+'''
+Start of program.
+Creates login window.
+Configures window size and its position on the x and y axis on the screen.
+Displays labels, entries, menus...
+Obfuscates password when entered into the entry.
+Keeps the program in a loop.
+'''
 
 window = Tk()
 window.title('Login')
@@ -197,6 +281,7 @@ window.geometry('{}x{}+{}+{}'.format(window_width, window_height, x, y))
 
 email_address = StringVar()
 password = StringVar()
+save = IntVar(window)
 
 menu = Menu(window)
 window.config(menu = menu)
@@ -220,7 +305,6 @@ Label(window, text = 'Password:', width = 20, height = 2, fg = 'white', bg = '#3
 password_entry = Entry(window, textvariable = password, fg = 'black', bg = 'white', font = ('consolas', 10), show = '*')
 password_entry.pack()
 
-save = IntVar(window)
 save_checkbox = Checkbutton(window, text = "Remember Me", variable = save, bg = '#303942', fg = 'white', activebackground = '#303942', command = saving)
 save_checkbox.pack()
 
@@ -228,6 +312,6 @@ Label(window, text = '', bg = '#303942').pack()
 Button(window, text = 'Login', width = 10, height = 1, fg = 'black', bg = 'white', font = ('arial', 10), command = login).pack()
 
 Label(window, text = '', bg = '#303942').pack()
-Label(window, text = 'Login by Kristof Kovacs\nand Daniel Zheleznov', width = 20, height = 2, fg = 'white', bg = '#303942', font = ('calibri', 15)).pack()
+Label(window, text = 'Pymail by Kristof Kovacs\nand Daniel Zheleznov', width = 20, height = 2, fg = 'white', bg = '#303942', font = ('calibri', 15)).pack()
 
 window.mainloop()
