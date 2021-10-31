@@ -1,6 +1,14 @@
-Pymail for windows!
+______                      _ _ 
+| ___ \                    (_) |
+| |_/ /   _ _ __ ___   __ _ _| |
+|  __/ | | | '_ ` _ \ / _` | | |
+| |  | |_| | | | | | | (_| | | |
+\_|   \__, |_| |_| |_|\__,_|_|_|
+       __/ |                    
+      |___/                     
 
 Pymail is an app that allows you to quickly and efficiently send emails without needing to open your browser.
+It is compatible with an operating system, however it does require an internet connection to function properly.
 
 REQUIREMENTS:
 	1. Google mail account.
@@ -14,7 +22,3 @@ How to use:
 3. Enter the receiver address, subject and text into the corresponding entries.
 4. Click send.
 5. Finished.
-
-Free email:
-In the Windows application version of this program there is a free email anyone can use.
-Have fun.
