@@ -1,7 +1,7 @@
 PYMAIL
 
 Pymail is an app that allows you to quickly and efficiently send emails without needing to open your browser.
-It is compatible with an operating system, however it does require an internet connection to function properly.
+It is compatible with any operating system, however it does require an internet connection to function properly.
 
 REQUIREMENTS:
 	1. Google mail account.
