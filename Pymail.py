@@ -30,7 +30,7 @@ def login():
 		showinfo('Login Successful', 'Successfully logged in as {}'.format(email_address_input))
 		window.destroy()
 		email()
-
+	
 	else:
 		showinfo('Error', 'Login Unsuccessful.')
 
@@ -171,8 +171,13 @@ def manual():
 
 
 def about():
-	showinfo('About this program', 'This is an email application written by Kristof Kovacs!')
+	showinfo('About this program', 'This is an email application written by Kristof Kovacs!\nIn collaboration with Daniel Zheleznov.')
 
+def saving():
+	if save.get() == 1:
+		save_checkbox['fg'] = 'green'
+	else:
+		save_checkbox['fg'] = 'white'
 
 window = Tk()
 window.title('Login')
@@ -212,13 +217,17 @@ email_address_entry.pack()
 
 Label(window, text = '', bg = '#303942').pack()
 Label(window, text = 'Password:', width = 20, height = 2, fg = 'white', bg = '#303942', font = ('calibri', 15)).pack()
-password_entry = Entry(window, textvariable = password, fg = 'black', bg = 'white', font = ('consolas', 10))
+password_entry = Entry(window, textvariable = password, fg = 'black', bg = 'white', font = ('consolas', 10), show = '*')
 password_entry.pack()
+
+save = IntVar(window)
+save_checkbox = Checkbutton(window, text = "Remember Me", variable = save, bg = '#303942', fg = 'white', activebackground = '#303942', command = saving)
+save_checkbox.pack()
 
 Label(window, text = '', bg = '#303942').pack()
 Button(window, text = 'Login', width = 10, height = 1, fg = 'black', bg = 'white', font = ('arial', 10), command = login).pack()
 
 Label(window, text = '', bg = '#303942').pack()
-Label(window, text = 'Login by Kristof Kovacs', width = 20, height = 2, fg = 'white', bg = '#303942', font = ('calibri', 15)).pack()
+Label(window, text = 'Login by Kristof Kovacs\nand Daniel Zheleznov', width = 20, height = 2, fg = 'white', bg = '#303942', font = ('calibri', 15)).pack()
 
 window.mainloop()
