@@ -25,6 +25,8 @@ def login():
 	4. Checks if password input does not equal to nothing.
 	5. If the conditions return true then the window will be destroyed, a pop up window will appear letting the user know their login was successful and the email() function is called.
 	6. Else the User will know the login was unsuccessful.
+
+	Also Initiates The saving Procedure
 	'''
 
 	global email_address_input
@@ -32,6 +34,8 @@ def login():
 
 	email_address_input = email_address.get()
 	password_input = password.get()
+
+	saving()
 
 	email_address_entry.delete(0, END)
 	password_entry.delete(0, END)
@@ -238,21 +242,51 @@ def about():
 
 	showinfo('About this program', 'This is an email application written by Kristof Kovacs!\nIn collaboration with Daniel Zheleznov.')
 
-
-def saving():
+def changeRemeberMeColors():
 	'''
 	Called when save_checkbox is checked.
-
-	1. Checks if the checkbox is checked.
-	2. Changes colour of the checkbox to show the user they have checked the checkbox.
+	Changes color of the Checkbox based on if the Invar is 1 or 0
 	'''
-
 	if save.get() == 1:
 		save_checkbox['fg'] = 'green'
 
 	else:
 		save_checkbox['fg'] = 'white'
 
+def saving():
+	'''
+	1. Checks if the checkbox is checked.
+	2. Saves if it is checked
+	'''
+
+	if save.get() == 1:
+		with open('.config', 'w') as file:
+			file.write(F'EMAIL:{email_address_entry.get()}\n')
+			file.write(F'PASS:{password_entry.get()}\n')
+			file.close()
+
+	else:
+		pass
+
+def checks():
+	'''
+	This Function checks if .config is a thing if so sign in automatically if not manually type it all
+	'''
+	try:
+		with open('.config','r') as file:
+			lines = file.readlines()
+
+			for count, line in enumerate(lines):
+				line = line.replace('\n','')
+				line = line.split(':')
+				lines[count] = line
+
+			email_address_entry.insert(END, lines[0][1])
+			password_entry.insert(END, lines[1][1])
+			login()
+
+	except Exception as e:
+		pass
 
 '''
 Start of program.
@@ -305,7 +339,7 @@ Label(window, text = 'Password:', width = 20, height = 2, fg = 'white', bg = '#3
 password_entry = Entry(window, textvariable = password, fg = 'black', bg = 'white', font = ('consolas', 10), show = '*')
 password_entry.pack()
 
-save_checkbox = Checkbutton(window, text = "Remember Me", variable = save, bg = '#303942', fg = 'white', activebackground = '#303942', command = saving)
+save_checkbox = Checkbutton(window, text = "Remember Me", variable = save, bg = '#303942', fg = 'white', activebackground = '#303942', command=changeRemeberMeColors)
 save_checkbox.pack()
 
 Label(window, text = '', bg = '#303942').pack()
@@ -313,5 +347,7 @@ Button(window, text = 'Login', width = 10, height = 1, fg = 'black', bg = 'white
 
 Label(window, text = '', bg = '#303942').pack()
 Label(window, text = 'Pymail by Kristof Kovacs\nand Daniel Zheleznov', width = 20, height = 2, fg = 'white', bg = '#303942', font = ('calibri', 15)).pack()
+
+checks()
 
 window.mainloop()
